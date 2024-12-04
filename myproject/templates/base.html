@@ -1,0 +1,88 @@
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'our.css' %}">
+    <link rel="stylesheet" href="{% block extra_styles %}{% endblock %}">
+    <title>{% block title %}Биография{% endblock %}</title>
+</head>
+<body class="page">
+    <div class="wrapper">
+        <header class="header">
+            <div class="header__content">
+                <nav class="header__navigation navigation">
+                    <ul class="navigation__list">
+                        <li class="navigation__item"><a href="{% url 'home' %}" class="navigation__link">Главная</a></li>
+                        <li class="navigation__item"><a href="{% url 'category' %}" class="navigation__link">Категории</a></li>
+                        <li class="navigation__item"><a href="{% url 'biography' %}" class="navigation__link">Биографии</a></li>
+                        <li class="navigation__item"><a href="#" class="navigation__link">Цитаты</a></li>
+                        <li class="navigation__item"><a href="#" class="navigation__link">Галерея</a></li>
+                        <li class="navigation__item"><a href="#" class="navigation__link">Группа сайта</a></li>
+                        <li class="navigation__item"><a href="#" class="navigation__link">Карта сайта</a></li>
+                        <li class="navigation__item"><a href="#" class="navigation__link">Контакты</a></li>
+                        <li class="navigation__item"><a href="#" class="navigation__link">Поиск</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <main class="main">
+            <section class="hero">
+                <h1 class="hero__title">Вся Биография<br><span class="hero__subtitle"></span></h1>
+                <form class="hero__search search" action="{% url 'search_articles' %}" method="get">
+                    <label class="search__label" for="search-input">Введите фамилию или имя</label>
+                    <input class="search__input" type="text" id="search-input" name="query" placeholder="Введите фамилию или имя">
+                    <button class="search__button" type="submit">Найти</button>
+                </form>
+            </section>
+            <section class="biography">
+                <aside class="biography__sidebar sidebar">
+                    <ul class="sidebar__list">
+                        <li class="sidebar__item">
+                            <a href="{% url 'biography' %}" class="sidebar__link">Биография</a>
+                        </li>
+                        <li class="sidebar__item">
+                            <a href="{% url 'category' %}" class="sidebar__link">Категории</a>
+                            <ul class="sidebar__sublist">
+                                {% for category in categories %}
+                                <li class="sidebar__subitem">
+                                    <a href="{% url 'category_details' category.slug %}" class="sidebar__sublink">
+                                        {{ category.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                </aside>
+                <div class="biography__content">
+                    {% block content %}{% endblock %}
+                </div>
+            </section>
+        </main>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            <script>
+                setTimeout(() => {
+                    const messages = document.querySelector('.messages');
+                    if (messages) {
+                        messages.style.transition = 'opacity 0.5s ease';
+                        messages.style.opacity = '0';
+                        setTimeout(() => messages.remove(), 500);
+                    }
+                }, 5000);
+            </script>
+        {% endif %}
+
+        <footer class="footer">
+            <p class="footer__text">Вся биография &copy; 2024</p>
+        </footer>
+    </div>
+
+
+</body>
+</html>

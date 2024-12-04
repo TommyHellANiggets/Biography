@@ -1,0 +1,99 @@
+.biography__header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.biography__title {
+    font-size: 32px;
+    margin: 0 0 10px;
+}
+
+.biography__meta {
+    font-size: 14px;
+    color: #555;
+}
+
+.biography__category,
+.biography__published,
+.biography__author,
+.biography__views {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.biography__link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.biography__link:hover {
+    text-decoration: underline;
+}
+
+.biography__main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.biography__figure {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.biography__image {
+    max-width: 200px;
+    border-radius: 8px;
+}
+
+.biography__caption {
+    font-size: 14px;
+    color: #555;
+}
+
+.biography__main {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.biography__subtitle {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.biography__text {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.biography__figure {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin: 0;
+}
+
+.biography__image {
+    height: 300px
+    aspect-ratio: 2/3;
+}
+
+h2 {
+    border-bottom: 1px solid #66666680;
+    padding-bottom: 6px;
+    margin-bottom: 7px;
+}
+
+.messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #ebebeb;
+    list-style: none;
+}

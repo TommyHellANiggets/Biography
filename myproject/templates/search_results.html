@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Результаты поиска{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="biography__main">
+    <ul class="breadcrumbs">
+        <li class="breadcrumbs__item">
+            <a href="{% url 'home' %}" class="breadcrumbs__link">Главная</a>
+        </li>
+        <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link">Поиск</a>
+        </li>
+    </ul>
+    <h1>Результаты поиска</h1>
+
+    {% if query %}
+        <p>Вы искали: "{{ query }}"</p>
+    {% endif %}
+
+    {% if articles %}
+        <p>Найдено {{ articles.count }} результат(ов):</p>
+        <ul class="biography__grid">
+            {% for article in articles %}
+            <li class="biography__item">
+                <a href="{% url 'biography_details' article.slug %}" class="biography__link">
+                    <figure class="biography__card">
+                        <img class="biography__image" src="{{ article.photo.url }}" alt="{{ article.title }}">
+                        <figcaption class="biography__name">{{ article.title }}</figcaption>
+                    </figure>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>По запросу "{{ query }}" ничего не найдено.</p>
+    {% endif %}
+</div>
+{% endblock %}

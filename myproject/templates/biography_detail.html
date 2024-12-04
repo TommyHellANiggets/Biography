@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ articles.title }}{% endblock %}
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'biography.css' %}">
+
+<div class="biography__main">
+    <header class="biography__header">
+        <h1 class="biography__title">{{ articles.title }}</h1>
+        <div class="biography__meta">
+            <span class="biography__category">Категория:
+                {% if articles.category %}
+                    <a href="#" class="biography__link">{{ articles.category.name }}</a>
+                {% else %}
+                    Без категории
+                {% endif %}
+            </span>
+            <span class="biography__tags">Теги:
+                {% if articles.tags.all %}
+                    {% for tag in articles.tags.all %}
+                        <a href="#" class="biography__link">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    Без тегов
+                {% endif %}
+            </span>
+            <span class="biography__published">Опубликовано: {{ articles.publication_date|date:"d.m.Y H:i" }}</span>
+        </div>
+    </header>
+    <figure class="biography__figure">
+        {% if articles.photo %}
+            <img src="{{ articles.photo.url }}" alt="{{ articles.title }}" class="biography__image">
+        {% endif %}
+        <figcaption class="biography__caption">
+            <strong>{{ articles.title }}</strong><br>
+            {% if articles.birth_date %}
+                Родился: {{ articles.birth_date|date:"d F Y" }}<br>
+            {% endif %}
+            {% if articles.death_date %}
+                Умер: {{ articles.death_date|date:"d F Y" }}
+            {% endif %}
+        </figcaption>
+    </figure>
+
+    <section class="biography__details">
+        <h2 class="biography__subtitle">Биография</h2>
+        {{ articles.content|safe }}
+    </section>
+
+    <div class="comments">
+        <h2>Добавить комментарий</h2>
+        <form method="post" class="comment-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="form__button">Опубликовать</button>
+        </form>
+        <h3>Комментарии</h3>
+        {% for comment in comments %}
+            <div class="comment">
+                <p><strong>{{ comment.name }}</strong> ({{ comment.created_at|date:"d.m.Y H:i" }})</p>
+                <p>{{ comment.text }}</p>
+            </div>
+        {% empty %}
+            <p>Комментариев пока нет.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

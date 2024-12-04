@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ articles.title }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'catalog.css' %}">
+
+<div class="biography__main">
+    {% for category in categories %}
+        <a href="{% url 'category_details' category.slug %}" class="category__sublink">
+            {{ category.name }}
+        </a>
+    {% endfor %}
+</div>
+{% endblock %}
