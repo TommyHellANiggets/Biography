@@ -6,11 +6,12 @@ from tinymce.models import HTMLField
 class Category(models.Model):
     name = models.CharField("Название", max_length=255, unique=True)
     slug = models.SlugField("Slug", max_length=255, unique=True, blank=True)
+    priority = models.PositiveIntegerField("Приоритет", default=0)  # Поле для управления порядком
 
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
-        ordering = ['name']
+        ordering = ['priority', 'name']  # Сортировка по приоритету, затем по названию
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -39,6 +40,8 @@ class Tag(models.Model):
         return self.name
 
 
+from django.db.models import F
+
 class Article(models.Model):
     title = models.CharField("Название", max_length=255)
     slug = models.SlugField("Slug", max_length=255, unique=True, blank=True)
@@ -49,6 +52,7 @@ class Article(models.Model):
     content = HTMLField("Содержание")
     category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.SET_NULL, null=True, blank=True)
     tags = models.ManyToManyField(Tag, verbose_name="Теги", blank=True)
+    views = models.PositiveIntegerField("Просмотры", default=0)
 
     class Meta:
         verbose_name = "Статья"
@@ -62,7 +66,6 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
-
 
 
 class Comment(models.Model):

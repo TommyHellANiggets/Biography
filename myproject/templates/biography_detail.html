@@ -17,6 +17,11 @@
                     Без категории
                 {% endif %}
             </span>
+
+            <div class="article__views">
+    Просмотры: {{ article.views }}
+</div>
+
             <span class="biography__tags">Теги:
                 {% if articles.tags.all %}
                     {% for tag in articles.tags.all %}

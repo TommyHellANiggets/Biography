@@ -20,9 +20,12 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ('created_at', 'article')
     search_fields = ('name', 'email', 'text')
 
+from .models import Category, Article, Tag
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug')  #
-    prepopulated_fields = {"slug": ("name",)}
-    search_fields = ('name',)
-
+    list_display = ('name', 'priority')  # Отображение имени и приоритета
+    list_editable = ('priority',)  # Поле для редактирования прямо в списке
+    ordering = ('priority',)  # Сортировка по приоритету
+    search_fields = ('name',)  # Поле для поиска
+    prepopulated_fields = {"slug": ("name",)}  # Автозаполнение slug

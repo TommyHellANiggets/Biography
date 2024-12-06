@@ -4,13 +4,44 @@ from django.contrib import messages
 from .forms import CommentForm
 
 
+from django.shortcuts import render
+from .models import Article, Category
+
+from django.db.models import F
+
 def home(request):
-    articles = Article.objects.all()
+    # Загружаем все категории
     categories = Category.objects.all()
-    return render(request, 'main.html', {'articles': articles, 'categories': categories})
+
+    # Подготовка данных для строк
+    rows = []
+    for category in categories:
+        # Берем до 4 случайных статей из категории
+        articles = Article.objects.filter(category=category).order_by('?')[:4]
+        if articles:
+            rows.append({
+                'category': category,
+                'articles': articles
+            })
+
+    context = {
+        'rows': rows,  # Каждая строка: категория и ее статьи
+    }
+    return render(request, 'main.html', context)
+
+
 
 def biography_details(request, slug):
     article = get_object_or_404(Article, slug=slug)
+
+    # Проверяем, есть ли cookie для этой статьи
+    viewed_articles = request.COOKIES.get('viewed_articles', '').split(',')
+
+    if str(article.id) not in viewed_articles:
+        # Увеличиваем количество просмотров
+        Article.objects.filter(pk=article.pk).update(views=F('views') + 1)
+        viewed_articles.append(str(article.id))
+
     tags = Tag.objects.filter(article=article)
     comments = article.comments.all()
     categories = Category.objects.all()
@@ -25,13 +56,20 @@ def biography_details(request, slug):
             messages.success(request, "Ваш комментарий успешно опубликован!")
             return redirect('biography_details', slug=article.slug)
 
-    return render(request, 'biography_detail.html', {
-        'articles': article,
+    response = render(request, 'biography_detail.html', {
+        'article': article,
         'tags': tags,
         'comments': comments,
         'form': form,
         'categories': categories
     })
+
+    # Обновляем cookies
+    response.set_cookie('viewed_articles', ','.join(viewed_articles), max_age=7 * 24 * 60 * 60)  # Хранить 7 дней
+
+    return response
+
+
 
 
 def category_details(request, slug):

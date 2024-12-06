@@ -3,19 +3,21 @@
 {% block content %}
 <div class="biography__content">
     {% for row in rows %}
-    <h2 class="biography__row-title">{{ row.name }}</h2>
-    <ul class="biography__grid">
-        {% for article in row.articles %}
-        <li class="biography__item">
-            <a href="{% url 'biography_details' biography.slug %}" class="biography__link">
-                <figure class="biography__card">
-                    <img class="biography__image" src="{{ article.photo.url }}" alt="{{ article.title }}">
-                    <figcaption class="biography__name">{{ article.title }}</figcaption>
-                </figure>
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
+        <div class="articles__row">
+            <h2>{{ row.category.name }}</h2>
+            <div class="articles">
+                {% for article in row.articles %}
+                    {% if article.slug %}
+                        <div class="article__card">
+                            {% if article.photo %}
+                                <img src="{{ article.photo.url }}" alt="{{ article.title }}" class="article__image">
+                            {% endif %}
+                            <a href="{% url 'biography_details' slug=article.slug %}" class="article__title">{{ article.title }}</a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
     {% endfor %}
 </div>
 {% endblock %}
