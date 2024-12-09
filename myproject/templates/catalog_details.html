@@ -1,13 +1,46 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ articles.title }}{% endblock %}
 
-{% block extra_styles %}
-<link rel="stylesheet" href="{% static 'catalog.css' %}">
-{% endblock %}
+{% block title %}{{ category.name }} - Детали{% endblock %}
 
 {% block content %}
-<div class="biography__main">
+<link rel="stylesheet" href="{% static 'catalog.css' %}">
 
+<div class="flex-row">
+    <h1>Все биографии из категории "{{ category.name }}"</h1>
+    <form method="get" id="sort-form">
+        <div class="sort-container">
+            <select name="sort" id="sort-selector" onchange="document.getElementById('sort-form').submit()">
+                <option value="-publication_date" {% if request.GET.sort == '-publication_date' or not request.GET.sort %}selected{% endif %}>
+                    По дате публикации
+                </option>
+                <option value="birth_date" {% if request.GET.sort == 'birth_date' %}selected{% endif %}>
+                    По дате рождения
+                </option>
+                <option value="death_date" {% if request.GET.sort == 'death_date' %}selected{% endif %}>
+                    По дате смерти
+                </option>
+                <option value="title" {% if request.GET.sort == 'title' %}selected{% endif %}>
+                    По алфавиту
+                </option>
+                <option value="-views" {% if request.GET.sort == '-views' %}selected{% endif %}>
+                    По популярности
+                </option>
+            </select>
+        </div>
+    </form>
+</div>
+
+<div class="category__grid" id="articles-container" style="grid-template-columns: repeat({{ card_count }}, 1fr);">
+    {% for article in articles %}
+        <div class="category__card category__card-style">
+            {% if article.photo %}
+                <img src="{{ article.photo.url }}" alt="{{ article.title }}" class="category__image">
+            {% endif %}
+            <div class="category__text">
+                <a href="{% url 'biography_details' slug=article.slug %}" class="article__title">{{ article.title }}</a>
+            </div>
+        </div>
+    {% endfor %}
 </div>
 {% endblock %}

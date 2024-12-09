@@ -1,5 +1,88 @@
-.category__sublink {
-    background-color: white;
-    border-radius: 5px;
-    padding: 10px 20px;
+/* Стили для контейнера грида */
+.category__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);  /* 5 карточек в строку */
+    gap: 20px;  /* Отступы между карточками */
+    margin: 20px 0;
+}
+
+/* Стили для каждой карточки */
+.category__card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.article__card > .article__title {
+    padding-inline: 20px;
+    margin: 0;
+}
+
+.category__card:hover::after {
+    opacity: 1; /* Показать затемнение при наведении */
+}
+
+/* Стили для изображений в карточках */
+.category__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;  /* Заполняем карточку изображением по всей площади */
+}
+
+
+/* Текст на карточке */
+.category__text {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* Стили для контейнера сортировки */
+.sort-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border-radius: 20px;
+}
+
+.sort-container span {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+#sort-selector {
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 20px;
+}
+
+/* Мобильные стили для адаптации */
+@media (max-width: 1200px) {
+    .category__grid {
+        grid-template-columns: repeat(3, 1fr);  /* 3 карточки в строку */
+    }
+}
+
+@media (max-width: 768px) {
+    .category__grid {
+        grid-template-columns: repeat(2, 1fr);  /* 2 карточки в строку */
+    }
+}
+
+@media (max-width: 480px) {
+    .category__grid {
+        grid-template-columns: 1fr;  /* 1 карточка в строку */
+    }
+}
+
+.flex-row {
+    display: flex;
+    justify-content: space-between;
 }

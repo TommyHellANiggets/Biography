@@ -25,10 +25,10 @@ SECRET_KEY = 'django-insecure-b9c1rg9n0*ttbx1zdd6*)(1+_o+^*0*!8w$^za=y(%#hg$l-q3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '97f2-45-134-79-9.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1', '35db-78-141-198-171.ngrok-free.app']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://97f2-45-134-79-9.ngrok-free.app',
+    'https://35db-78-141-198-171.ngrok-free.app',
 
 ]
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'tinymce',
+    'simplemde',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.context_processors.display_settings',
             ],
         },
     },
@@ -114,13 +116,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'ru'
+USE_L10N = True
 USE_I18N = True
+TIME_ZONE = 'Europe/Moscow'
+DEFAULT_CHARSET = 'utf-8'
 
-USE_TZ = True
 
 
 STATIC_URL = '/static/'

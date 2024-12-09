@@ -21,3 +21,4 @@ class CommentForm(forms.ModelForm):
         if not all(cleaned_data.values()):
             raise forms.ValidationError("Все поля должны быть заполнены!")
         return cleaned_data
+

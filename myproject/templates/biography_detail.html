@@ -6,70 +6,81 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'biography.css' %}">
 
-<div class="biography__main">
     <header class="biography__header">
         <h1 class="biography__title">{{ articles.title }}</h1>
         <div class="biography__meta">
-            <span class="biography__category">Категория:
-                {% if articles.category %}
-                    <a href="#" class="biography__link">{{ articles.category.name }}</a>
+            <div class="biography__category">Категория:
+                {% if article.category %}
+                    <a href="{% url 'category_details' slug=article.category.slug %}" class="biography__link">{{ article.category.name }}</a>
                 {% else %}
                     Без категории
                 {% endif %}
-            </span>
-
+            </div>
             <div class="article__views">
-    Просмотры: {{ article.views }}
-</div>
-
-            <span class="biography__tags">Теги:
-                {% if articles.tags.all %}
-                    {% for tag in articles.tags.all %}
-                        <a href="#" class="biography__link">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                {% else %}
-                    Без тегов
-                {% endif %}
-            </span>
-            <span class="biography__published">Опубликовано: {{ articles.publication_date|date:"d.m.Y H:i" }}</span>
+                Просмотры: {{ article.views }}
+            </div>
+            <div class="biography__published">Опубликовано: {{ article.publication_date|date:"d.m.Y H:i" }}</div>
         </div>
     </header>
     <figure class="biography__figure">
-        {% if articles.photo %}
-            <img src="{{ articles.photo.url }}" alt="{{ articles.title }}" class="biography__image">
+        {% if article.photo %}
+            <img src="{{ article.photo.url }}" alt="{{ article.title }}" class="biography__image">
         {% endif %}
         <figcaption class="biography__caption">
-            <strong>{{ articles.title }}</strong><br>
-            {% if articles.birth_date %}
-                Родился: {{ articles.birth_date|date:"d F Y" }}<br>
+            <strong>{{ article.title }}</strong><br>
+            {% if article.birth_date %}
+                Родился: {{ article.birth_date|date:"d F Y" }}<br>
             {% endif %}
-            {% if articles.death_date %}
-                Умер: {{ articles.death_date|date:"d F Y" }}
+            {% if article.death_date %}
+                Умер: {{ article.death_date|date:"d F Y" }}
             {% endif %}
         </figcaption>
     </figure>
 
     <section class="biography__details">
         <h2 class="biography__subtitle">Биография</h2>
-        {{ articles.content|safe }}
+        {{ article.content|safe }}
     </section>
-
-    <div class="comments">
-        <h2>Добавить комментарий</h2>
-        <form method="post" class="comment-form">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="form__button">Опубликовать</button>
-        </form>
-        <h3>Комментарии</h3>
-        {% for comment in comments %}
-            <div class="comment">
-                <p><strong>{{ comment.name }}</strong> ({{ comment.created_at|date:"d.m.Y H:i" }})</p>
-                <p>{{ comment.text }}</p>
-            </div>
-        {% empty %}
-            <p>Комментариев пока нет.</p>
-        {% endfor %}
+    <div class="biography__tags">
+        <span class="biography__tags-tag">
+            {% if article.tags.all %}
+            {% for tag in article.tags.all %}
+                <a href="{% url 'search_articles' %}?query={{ tag.name }}" class="biography__link">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% endif %}
+        </span>
     </div>
-</div>
+    <div class="comments">
+        <div class="leftside">
+            <h3 class="comments__title">Добавить комментарий</h3>
+            <form method="post" class="comment-form">
+                {% csrf_token %}
+                <div class="form__row">
+                    <input type="text" name="name" class="form__input" placeholder="Ваше имя" required>
+                    <input type="email" name="email" class="form__input" placeholder="Ваш email" required>
+                </div>
+                <textarea name="text" class="form__textarea" placeholder="Ваш комментарий" rows="4" required></textarea>
+                <div class="form__actions">
+                    <button type="submit" class="form__button">Опубликовать</button>
+                </div>
+            </form>
+        </div>
+        <div class="rightside">
+            <h2 class="comments__subtitle">Комментарии</h2>
+            <div class="comments__list">
+                {% for comment in comments %}
+                    <div class="comment">
+                        <p class="comment__header">
+                            <span class="comment__user-name">{{ comment.name }}</span>
+                            <span class="comment__date">{{ comment.created_at|date:"d.m.Y" }}</span>
+                        </p>
+                        <p class="comment__text">{{ comment.text }}</p>
+                    </div>
+                {% empty %}
+                    <p class="comment__empty">Комментариев ещё нет... Будьте первыми!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

@@ -8,45 +8,37 @@
 </head>
 <body class="page">
     <div class="wrapper">
+        {% if show_header %}
         <header class="header">
             <div class="header__content">
                 <nav class="header__navigation navigation">
                     <ul class="navigation__list">
                         <li class="navigation__item"><a href="{% url 'home' %}" class="navigation__link">Главная</a></li>
-                        <li class="navigation__item"><a href="{% url 'category' %}" class="navigation__link">Категории</a></li>
-                        <li class="navigation__item"><a href="{% url 'biography' %}" class="navigation__link">Биографии</a></li>
                         <li class="navigation__item"><a href="{% url 'search_articles' %}" class="navigation__link">Поиск</a></li>
                     </ul>
                 </nav>
             </div>
         </header>
+        {% endif %}
         <main class="main">
             <section class="hero">
                 <h1 class="hero__title">Вся Биография<br><span class="hero__subtitle"></span></h1>
                 <form class="hero__search search" action="{% url 'search_articles' %}" method="get">
-                    <label class="search__label" for="search-input">Введите фамилию или имя</label>
                     <input class="search__input" type="text" id="search-input" name="query" placeholder="Введите фамилию или имя">
                     <button class="search__button" type="submit">Найти</button>
                 </form>
             </section>
             <section class="biography">
                 <aside class="biography__sidebar sidebar">
-                    <ul class="sidebar__list">
-                        <li class="sidebar__item">
-                            <a href="{% url 'biography' %}" class="sidebar__link">Биография</a>
+                    <ul class="sidebar__sublist">
+                        {% for category in categories %}
+                        <li class="sidebar__subitem">
+                            <a href="{% url 'category_details' category.slug %}" class="sidebar__sublink">
+                                {{ category.name }}
+                                <svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="512" height="512"><path d="M15.4,9.88,10.81,5.29a1,1,0,0,0-1.41,0,1,1,0,0,0,0,1.42L14,11.29a1,1,0,0,1,0,1.42L9.4,17.29a1,1,0,0,0,1.41,1.42l4.59-4.59A3,3,0,0,0,15.4,9.88Z"/></svg>
+                            </a>
                         </li>
-                        <li class="sidebar__item">
-                            <a href="{% url 'category' %}" class="sidebar__link">Категории</a>
-                            <ul class="sidebar__sublist">
-                                {% for category in categories %}
-                                <li class="sidebar__subitem">
-                                    <a href="{% url 'category_details' category.slug %}" class="sidebar__sublink">
-                                        {{ category.name }}
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </aside>
                 <div class="biography__content">
@@ -72,12 +64,103 @@
                 }, 5000);
             </script>
         {% endif %}
-
+        {% if show_footer %}
         <footer class="footer">
-            <p class="footer__text">Вся биография &copy; 2024</p>
+            <div class="footer__content">
+                <div class="footer__section">
+                    <h3 class="footer__title">Контактная информация</h3>
+                    <ul class="footer__list">
+                        <li class="footer__item">
+                            <span>Электронная почта:</span> 
+                            <a href="mailto:info@biography.com" class="footer__link">info@biography.com</a>
+                        </li>
+                        <li class="footer__item">
+                            <span>Телефон:</span> 
+                            <a href="tel:+123456789" class="footer__link">+1 (234) 567-89</a>
+                        </li>
+                        <li class="footer__item">
+                            <span>Адрес:</span> 123 Биографическая ул., Москва, Россия
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="footer__section">
+                    <h3 class="footer__title">Полезные ссылки</h3>
+                    <ul class="footer__list">
+                        <li class="footer__item">
+                            <a href="/about" class="footer__link">О нас</a>
+                        </li>
+                        <li class="footer__item">
+                            <a href="/terms" class="footer__link">Пользовательское соглашение</a>
+                        </li>
+                        <li class="footer__item">
+                            <a href="/privacy" class="footer__link">Политика конфиденциальности</a>
+                        </li>
+                        <li class="footer__item">
+                            <a href="/cookie-policy" class="footer__link">Политика в отношении cookie</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="footer__section">
+                    <h3 class="footer__title">Информация</h3>
+                    <p class="footer__text">
+                        Данный сайт предоставляется в информационных целях. Персональные данные пользователей не собираются и не передаются третьим лицам. Мы не храним информацию об оплатах, так как она отсутствует.
+                    </p>
+                </div>
+            </div>
+        
+            <div class="footer__bottom">
+                <p class="footer__text">&copy; 2024 Вся биография. Все права защищены.</p>
+            </div>
         </footer>
+        {% endif %}
+        
     </div>
 
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('search-input');
+            const resultsContainer = document.createElement('ul');
+            resultsContainer.className = 'search-results';
+            searchInput.parentNode.appendChild(resultsContainer);
+        
+            searchInput.addEventListener('input', function () {
+                const query = searchInput.value;
+        
+                if (query.length >= 3) {
+                    fetch(`/search/?query=${encodeURIComponent(query)}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            resultsContainer.innerHTML = '';
+                            if (data.results.length > 0) {
+                                data.results.forEach(article => {
+                                    const listItem = document.createElement('li');
+                                    const link = document.createElement('a');
+                                    link.href = `/biography/${article.slug}/`;
+                                    link.textContent = article.title;
+                                    listItem.appendChild(link);
+                                    resultsContainer.appendChild(listItem);
+                                });
+                            } else {
+                                resultsContainer.innerHTML = '<li>Нет результатов</li>';
+                            }
+                        })
+                        .catch(() => {
+                            resultsContainer.innerHTML = '<li>Ошибка загрузки данных</li>';
+                        });
+                } else {
+                    resultsContainer.innerHTML = '';
+                }
+            });
+        });
+        
+        
+        </script>
+        
 </body>
 </html>

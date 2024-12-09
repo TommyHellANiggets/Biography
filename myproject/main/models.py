@@ -3,9 +3,13 @@ from django.utils.text import slugify
 from tinymce.models import HTMLField
 
 
+from django.db import models
+from django.utils.text import slugify
+
 class Category(models.Model):
     name = models.CharField("Название", max_length=255, unique=True)
     slug = models.SlugField("Slug", max_length=255, unique=True, blank=True)
+    photo = models.ImageField("Фотография", upload_to='categories/photos/', blank=True, null=True)  # Поле для фото
     priority = models.PositiveIntegerField("Приоритет", default=0)  # Поле для управления порядком
 
     class Meta:
@@ -83,3 +87,69 @@ class Comment(models.Model):
     def __str__(self):
         return f"Комментарий от {self.name} к статье {self.article.title}"
 
+
+from django.db import models
+
+class GridSettings(models.Model):
+    CARD_COUNT_CHOICES = [
+        (3, '3 карточки в строку'),
+        (4, '4 карточки в строку'),
+        (5, '5 карточек в строку'),
+        (6, '6 карточек в строку'),
+    ]
+    card_count = models.IntegerField(choices=CARD_COUNT_CHOICES, default=5, verbose_name="Количество карточек в строку")
+
+    class Meta:
+        verbose_name = "Настройка сетки"
+        verbose_name_plural = "Настройки сетки"
+
+    def __str__(self):
+        return f"{self.card_count} карточек в строку"
+
+
+from django.db import models
+
+class DisplaySettings(models.Model):
+    show_header = models.BooleanField("Показывать Header", default=True)
+    show_footer = models.BooleanField("Показывать Footer", default=True)
+
+    def __str__(self):
+        return "Настройки отображения Header и Footer"
+
+    class Meta:
+        verbose_name = "Настройка отображения"
+        verbose_name_plural = "Настройки отображения"
+
+
+from django.db import models
+
+class DisplayCategoryOrder(models.Model):
+    CATEGORY_TYPE_CHOICES = [
+        ('recent', 'Последние добавленные'),
+        ('popular', 'Популярные'),
+        ('category', 'Категория'),
+    ]
+
+    category_type = models.CharField(
+        max_length=20,
+        choices=CATEGORY_TYPE_CHOICES,
+        verbose_name="Тип отображения",
+    )
+    category = models.ForeignKey(
+        'Category',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name="Категория (если выбрана)"
+    )
+    position = models.PositiveIntegerField("Позиция", default=0)
+
+    class Meta:
+        verbose_name = "Отображение категорий"
+        verbose_name_plural = "Отображение категорий"
+        ordering = ['position']
+
+    def __str__(self):
+        if self.category_type == 'category' and self.category:
+            return f"{self.position}. {self.category.name}"
+        return f"{self.position}. {dict(self.CATEGORY_TYPE_CHOICES).get(self.category_type)}"

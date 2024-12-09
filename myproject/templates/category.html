@@ -1,15 +1,22 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ articles.title }}{% endblock %}
+
+{% block title %}Категории{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'catalog.css' %}">
 
-<div class="biography__main">
+<div class="category__grid">
     {% for category in categories %}
-        <a href="{% url 'category_details' category.slug %}" class="category__sublink">
-            {{ category.name }}
+        <a href="{% url 'category_details' category.slug %}" class="category__card-link">
+            <div class="category__card">
+                {% if category.photo %}
+                    <img src="{{ category.photo.url }}" alt="{{ category.name }}" class="category__image">
+                {% endif %}
+                <div class="category__text">{{ category.name }}</div>
+            </div>
         </a>
     {% endfor %}
 </div>
+
 {% endblock %}

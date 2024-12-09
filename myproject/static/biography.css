@@ -1,7 +1,7 @@
 .biography__header {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
 }
 
 .biography__title {
@@ -12,14 +12,17 @@
 .biography__meta {
     font-size: 14px;
     color: #555;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
 }
 
-.biography__category,
-.biography__published,
-.biography__author,
-.biography__views {
-    display: inline-block;
-    margin-right: 15px;
+.biography__meta div {
+    border: 1px solid #333;
+    border-radius: 50px;
+    padding: 6px 12px;
 }
 
 .biography__link {
@@ -41,16 +44,35 @@
     display: flex;
     align-items: center;
     gap: 15px;
-}
-
-.biography__image {
-    max-width: 200px;
-    border-radius: 8px;
+    padding-bottom: 30px;
 }
 
 .biography__caption {
     font-size: 14px;
     color: #555;
+}
+
+.biography__tags {
+    display: flex;
+    justify-content: end;
+    padding: 30px 0;
+    gap: 5px;
+}
+
+.biography__tags-tag {
+    background-color: #333;
+    padding: 10px 20px;
+    border-radius: 30px;
+    color: white;
+}
+
+.biography__tags-tag > .biography__link {
+    color: white;
+}
+
+.biography__category > .biography__link {
+    color: #333;
+    font-weight: 600;
 }
 
 .biography__main {
@@ -72,14 +94,13 @@
 
 .biography__figure {
     display: flex;
-    flex-direction: column;
-    align-items: start;
+    align-items: end;
     margin: 0;
 }
 
 .biography__image {
-    height: 300px
-    aspect-ratio: 2/3;
+    height: 250px;
+    width: auto;
 }
 
 h2 {
@@ -97,3 +118,109 @@ h2 {
     background-color: #ebebeb;
     list-style: none;
 }
+
+.comments {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.leftside {
+    position: sticky;
+    top: 0;
+}
+
+.comments__title,
+.comments__subtitle {
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.comment-form {
+    margin-top: 20px;
+}
+
+.form__row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.form__row input[type="text"],
+.form__row input[type="email"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1em;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1em;
+    font-family: 'Arial', sans-serif; 
+    background-color: #fff;
+    resize: none; 
+    transition: border-color 0.3s ease;
+}
+
+textarea:focus,
+.form__row input[type="text"]:focus,
+.form__row input[type="email"]:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+.form__actions {
+    text-align: right; /* Кнопка справа */
+    margin-top: 10px;
+}
+
+.form__button {
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form__button:hover {
+    background-color: #0056b3;
+}
+
+.comments__list {
+    margin-top: 20px;
+}
+
+.comment {
+    margin-bottom: 15px;
+}
+
+.comment__date {
+    font-size: 0.9em;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.comment__text {
+    font-size: 1em;
+    color: #33333393;
+}
+
+.comment__empty {
+    text-align: center;
+    font-size: 1em;
+    color: #888;
+}
+
