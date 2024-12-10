@@ -2,17 +2,34 @@
 {% load static %}
 
 {% block content %}
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <div class="flex-row">
+        <h1>Биография</h1>
+        <div class="sort-container">
+            <select id="sortSelect" class="sort-select" onchange="window.location.href='?sort=' + this.value">
+                <option value="-publication_date" {% if sort_option == '-publication_date' %}selected{% endif %}>По дате публикации (сначала новые)</option>
+                <option value="publication_date" {% if sort_option == 'publication_date' %}selected{% endif %}>По дате публикации (сначала старые)</option>
+                <option value="birth_date" {% if sort_option == 'birth_date' %}selected{% endif %}>По дате рождения</option>
+                <option value="death_date" {% if sort_option == 'death_date' %}selected{% endif %}>По дате смерти</option>
+                <option value="title" {% if sort_option == 'title' %}selected{% endif %}>По алфавиту (А-Я)</option>
+                <option value="-views" {% if sort_option == '-views' %}selected{% endif %}>По популярности</option>
+            </select>
+        </div>
+    </div>
+
     {% for row in rows %}
         <section>
-            <h2>{{ row.title }}</h2>
-            <div class="articles" style="display: grid; grid-template-columns: repeat({{ card_count }}, 1fr); gap: 16px;">
+            {% comment %} <h2 style="font-weight: normal;">{{ row.title }}</h2> {% endcomment %}
+            <div class="articles grid-{{ card_count }}">
                 {% for article in row.articles %}
                     <div class="article__card">
-                        {% if article.photo %}
-                            <img src="{{ article.photo.url }}" alt="{{ article.title }}" class="article__image">
-                        {% else %}
-                            <img src="{% static 'placeholder.png' %}" alt="Placeholder" class="article__image">
-                        {% endif %}
+                        <a href="{% url 'biography_details' slug=article.slug %}">
+                            {% if article.photo %}
+                                <img src="{{ article.photo.url }}" alt="{{ article.title }}" class="article__image">
+                            {% else %}
+                                <img src="{% static 'placeholder.png' %}" alt="Placeholder" class="article__image">
+                            {% endif %}
+                        </a>
                         <a href="{% url 'biography_details' slug=article.slug %}" class="article__title">{{ article.title }}</a>
                     </div>
                 {% endfor %}

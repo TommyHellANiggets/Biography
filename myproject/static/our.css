@@ -44,12 +44,37 @@ h1, h2, h3, h4, h5, p, ul, li {
     margin-inline: auto;
 }
 
+.burger-menu {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .header {
+        position: fixed;
+        top: 0;
+        background-color: white;
+        width: calc(100% - 30px);
+        z-index: 1000;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .main {
+        padding-top: 60px;
+    }
+
+    .burger-menu {
+        display: block;
+    }
+}
+
 .navigation__item {
     border: 1px solid #33333380;
     border-radius: 10px;
     padding: 6px 12px;
     background-color: #fafafa;
 }
+
 
 .main {
     max-width: 1150px;
@@ -180,6 +205,7 @@ h1, h2, h3, h4, h5, p, ul, li {
     display: -webkit-box;
     -webkit-line-clamp: 2; /* Ограничить до 2 строк */
     -webkit-box-orient: vertical; /* Указать ориентацию блока как вертикальную */
+    padding-inline: 20px;
 }
 
 .biography__content {
@@ -264,6 +290,10 @@ h1, h2, h3, h4, h5, p, ul, li {
     text-decoration: none;
 }
 
+.biography__content h2 {
+    padding: 10px 0;;
+}
+
 .footer__link:hover {
     text-decoration: underline;
 }
@@ -288,12 +318,13 @@ h1, h2, h3, h4, h5, p, ul, li {
 }
 
 .breadcrumbs__item {
-    color: blue;
+    color: rgb(0, 0, 0);
+    
 }
 
 .breadcrumbs__item::after {
     content: '/';
-    color: blue;
+    color: rgb(0, 0, 0);
 }
 
 .breadcrumbs__item:last-child {
@@ -306,10 +337,86 @@ h1, h2, h3, h4, h5, p, ul, li {
 
 .articles {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);  /* По 4 карточки на ширину 1024px */
-    gap: 20px;  /* Отступы между карточками */
-    margin: 10px 0;
+    gap: 16px;
 }
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-5 {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.grid-6 {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+@media (max-width: 500px) {
+    .articles {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px; 
+    }
+}
+
+
+.burger-menu {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.custom-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Скрыто за экраном */
+    width: 300px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    z-index: 1000;
+}
+
+.custom-sidebar.active {
+    right: 0; /* Показать сайдбар */
+}
+
+.custom-sidebar__close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: 1rem;
+    margin-top: 1rem;
+}
+
+.custom-sidebar__list {
+    padding: 1rem;
+}
+
+.custom-sidebar__item {
+    margin: 1rem 0;
+}
+
+.custom-sidebar__sublink {
+    text-decoration: none;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
 
 .article__card {
     border: 1px solid #ddd;
@@ -354,6 +461,29 @@ h1, h2, h3, h4, h5, p, ul, li {
     }
 }
 
+.header__navigation {
+    display: flex;
+    justify-content: space-between;
+}
+
+.custom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачное черное */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 999;
+}
+
+.custom-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
 .hero__search {
     display: flex;
     background-color: white;
@@ -376,12 +506,17 @@ h1, h2, h3, h4, h5, p, ul, li {
     top: 240px;
     margin: 0;
     padding: 0;
-    border: 1px solid #ccc;
-    max-height: 200px;
+    border-radius: 10px;
+    max-height: 300px;
+    max-width: 300px;
+    width: 100%;
     overflow-y: auto;
     position: absolute;
     z-index: 1000;
     background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .search-results li {
@@ -395,4 +530,13 @@ h1, h2, h3, h4, h5, p, ul, li {
 
 .search-results li:hover {
     background-color: #f0f0f0;
+}
+
+@media (max-width: 425px) {
+    .article__image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        object-position: center;
+    }
 }

@@ -3,11 +3,11 @@
 
 {% block title %}Результаты поиска{% endblock %}
 
-{% block extra_styles %}
-<link rel="stylesheet" href="{% static 'catalog.css' %}">
-{% endblock %}
+
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'catalog.css' %}">
+
 <div class="biography__main">
     <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
@@ -24,8 +24,7 @@
     {% endif %}
 
     {% if articles %}
-        <p>Найдено {{ articles.count }} результат(ов):</p>
-        <ul class="biography__grid">
+        <ul class="biography__grid grid-{{ card_count }}">
             {% for article in articles %}
             <li class="biography__item">
                 <a href="{% url 'biography_details' article.slug %}" class="biography__link">
@@ -37,8 +36,6 @@
             </li>
             {% endfor %}
         </ul>
-    {% else %}
-        <p>По запросу "{{ query }}" ничего не найдено.</p>
     {% endif %}
 </div>
 {% endblock %}

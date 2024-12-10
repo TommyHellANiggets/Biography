@@ -1,7 +1,6 @@
 /* Стили для контейнера грида */
 .category__grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);  /* 5 карточек в строку */
     gap: 20px;  /* Отступы между карточками */
     margin: 20px 0;
 }
@@ -63,26 +62,48 @@
     border-radius: 20px;
 }
 
-/* Мобильные стили для адаптации */
-@media (max-width: 1200px) {
-    .category__grid {
-        grid-template-columns: repeat(3, 1fr);  /* 3 карточки в строку */
-    }
+/* Удаляем старые медиа-запросы и обновляем стили грида */
+.grid-3 {
+    display: grid;
+    gap: 20px;
 }
 
+.grid-4 {
+    display: grid;
+    gap: 20px;
+}
+
+.grid-5 {
+    display: grid;
+    gap: 20px;
+}
+
+.grid-6 {
+    display: grid;
+    gap: 20px;
+}
+
+/* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
-    .category__grid {
-        grid-template-columns: repeat(2, 1fr);  /* 2 карточки в строку */
+    .grid-3, .grid-4, .grid-5, .grid-6 {
+        grid-template-columns: repeat(2, 1fr) !important;
     }
 }
 
 @media (max-width: 480px) {
-    .category__grid {
-        grid-template-columns: 1fr;  /* 1 карточка в строку */
+    .grid-3, .grid-4, .grid-5, .grid-6 {
+        grid-template-columns: 1fr !important;
     }
 }
 
 .flex-row {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+#sort-form {
+    margin-bottom: 0px;
 }

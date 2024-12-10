@@ -9,13 +9,13 @@ from django.utils.text import slugify
 class Category(models.Model):
     name = models.CharField("Название", max_length=255, unique=True)
     slug = models.SlugField("Slug", max_length=255, unique=True, blank=True)
-    photo = models.ImageField("Фотография", upload_to='categories/photos/', blank=True, null=True)  # Поле для фото
-    priority = models.PositiveIntegerField("Приоритет", default=0)  # Поле для управления порядком
+    photo = models.ImageField("Фотография", upload_to='categories/photos/', blank=True, null=True)
+    priority = models.PositiveIntegerField("Приоритет", default=0)
 
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
-        ordering = ['priority', 'name']  # Сортировка по приоритету, затем по названию
+        ordering = ['priority', 'name']
 
     def save(self, *args, **kwargs):
         if not self.slug:

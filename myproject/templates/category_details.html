@@ -31,11 +31,13 @@
     </form>
 </div>
 
-<div class="category__grid" id="articles-container" style="grid-template-columns: repeat({{ card_count }}, 1fr);">
+<div class="grid-{{ card_count }}" id="articles-container" style="grid-template-columns: repeat({{ card_count }}, 1fr);">
     {% for article in articles %}
         <div class="category__card category__card-style">
             {% if article.photo %}
                 <img src="{{ article.photo.url }}" alt="{{ article.title }}" class="category__image">
+            {% else %}
+                <img src="{% static 'default.jpg' %}" alt="Default Image" class="category__image">
             {% endif %}
             <div class="category__text">
                 <a href="{% url 'biography_details' slug=article.slug %}" class="article__title">{{ article.title }}</a>
@@ -43,4 +45,8 @@
         </div>
     {% endfor %}
 </div>
+
+{% if articles|length == 0 %}
+    <p class="no-articles">В этой категории пока нет статей.</p>
+{% endif %}
 {% endblock %}

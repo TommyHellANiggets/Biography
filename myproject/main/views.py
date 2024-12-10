@@ -17,23 +17,22 @@ from django.shortcuts import render
 from .models import Category, Article, DisplayCategoryOrder, GridSettings
 
 def home(request):
-    # Загружаем все категории
+    sort_option = request.GET.get('sort', '-publication_date')
+    
     categories = Category.objects.all()
 
-    # Получаем настройки отображения категорий
     display_order = DisplayCategoryOrder.objects.select_related('category').all()
 
-    # Получаем настройки сетки (количество карточек в строке)
     grid_setting = GridSettings.objects.first()
-    card_count = grid_setting.card_count if grid_setting else 5  # Используем 5 как значение по умолчанию
+    card_count = grid_setting.card_count if grid_setting else 5
 
-    # Популярные статьи
-    popular_articles = Article.objects.order_by('-views')[:card_count]
-    
-    # Последние статьи
-    recent_articles = Article.objects.order_by('-publication_date')[:card_count]
+    try:
+        popular_articles = Article.objects.order_by(sort_option)[:card_count]
+        recent_articles = Article.objects.order_by(sort_option)[:card_count]
+    except Exception as e:
+        popular_articles = Article.objects.order_by('-views')[:card_count]
+        recent_articles = Article.objects.order_by('-publication_date')[:card_count]
 
-    # Формируем строки для отображения
     rows = []
     for item in display_order:
         if item.category_type == 'recent':
@@ -49,7 +48,7 @@ def home(request):
                 'articles': popular_articles,
             })
         elif item.category_type == 'category' and item.category:
-            articles = Article.objects.filter(category=item.category).order_by('-publication_date')[:card_count]
+            articles = Article.objects.filter(category=item.category).order_by(sort_option)[:card_count]
             rows.append({
                 'type': 'category',
                 'title': item.category.name,
@@ -57,9 +56,10 @@ def home(request):
             })
 
     context = {
-        'rows': rows,           # Формируем строки для отображения
-        'card_count': card_count,  # Настройки сетки
-        'categories': categories,  # Категории для меню
+        'rows': rows,
+        'card_count': card_count,
+        'categories': categories,
+        'sort_option': sort_option,
     }
     return render(request, 'main.html', context)
 
@@ -74,32 +74,26 @@ from .forms import CommentForm
 
 
 def biography_details(request, slug):
-    # Получение статьи по slug
     article = get_object_or_404(Article, slug=slug)
 
-    # Проверка и обновление cookies для учета просмотров
     viewed_articles = request.COOKIES.get('viewed_articles', '').split(',')
     if str(article.id) not in viewed_articles:
         Article.objects.filter(pk=article.pk).update(views=F('views') + 1)
         viewed_articles.append(str(article.id))
 
-    # Получение связанных данных
     tags = Tag.objects.filter(article=article)
     comments = article.comments.all()
     categories = Category.objects.all()
 
-    # Если метод POST, обрабатываем отправку формы
     if request.method == 'POST':
-        # Собираем данные вручную из инпутов в шаблоне
         data = {
             'name': request.POST.get('name'),
             'email': request.POST.get('email'),
-            'text': request.POST.get('text'),  # Поле для текста комментария
+            'text': request.POST.get('text'),
         }
 
-        form = CommentForm(data)  # Передаем данные в форму
+        form = CommentForm(data)
         if form.is_valid():
-            # Сохраняем комментарий, связывая его с текущей статьей
             comment = form.save(commit=False)
             comment.article = article
             comment.save()
@@ -119,8 +113,7 @@ def biography_details(request, slug):
         'categories': categories,
     })
 
-    # Обновление cookies
-    response.set_cookie('viewed_articles', ','.join(viewed_articles), max_age=7 * 24 * 60 * 60)  # Хранить 7 дней
+    response.set_cookie('viewed_articles', ','.join(viewed_articles), max_age=7 * 24 * 60 * 60)
 
     return response
 
@@ -130,32 +123,31 @@ from django.http import JsonResponse
 
 from .models import GridSettings
 
+from django.shortcuts import render, get_object_or_404
+from .models import Category, Article, GridSettings
+
 def category_details(request, slug):
-    # Получаем текущую категорию
     category = get_object_or_404(Category, slug=slug)
-    # Получаем все категории для отображения
+
     categories = Category.objects.all()
-    # Определяем параметр сортировки (по умолчанию - по дате публикации)
+
     sort_option = request.GET.get('sort', '-publication_date')
 
     try:
-        # Фильтруем статьи по категории и сортируем
         articles = Article.objects.filter(category=category).order_by(sort_option)
     except Exception as e:
-        # Если сортировка некорректна, используем стандартный порядок
         print(f"Ошибка сортировки: {e}")
         articles = Article.objects.filter(category=category).order_by('-publication_date')
 
-    # Получаем настройку сетки
-    grid_setting = GridSettings.objects.first()  # Берем первую запись настроек
-    card_count = grid_setting.card_count if grid_setting else 5  # По умолчанию 5 карточек
+    grid_setting = GridSettings.objects.first()
+    card_count = grid_setting.card_count if grid_setting else 5
 
-    # Рендерим шаблон с категориями, статьями и настройкой сетки
-    return render(request, 'catalog_details.html', {
+    return render(request, 'category_details.html', {
         'category': category,
         'categories': categories,
         'articles': articles,
         'card_count': card_count,
+        'sort_option': sort_option,
     })
 
 
@@ -166,16 +158,12 @@ def category(request):
 
 
 def biography(request):
-    # Загружаем категории
     categories = Category.objects.all()
 
-    # Загружаем 4 популярных статьи (сортировка по просмотрам)
     popular_articles = Article.objects.order_by('-views')[:4]
 
-    # Загружаем 4 последние добавленные статьи (сортировка по дате публикации)
     recent_articles = Article.objects.order_by('-publication_date')[:4]
 
-    # Подготовка строк категорий со статьями
     rows = []
     for category in categories:
         articles = Article.objects.filter(category=category)
@@ -186,10 +174,10 @@ def biography(request):
             })
 
     context = {
-        'categories': categories,         # Категории для base.html
-        'popular_articles': popular_articles,  # Популярные статьи
-        'recent_articles': recent_articles,    # Последние добавленные статьи
-        'rows': rows,                     # Строки категорий со статьями
+        'categories': categories,
+        'popular_articles': popular_articles,
+        'recent_articles': recent_articles,
+        'rows': rows,
     }
     return render(request, 'biography.html', context)
 
@@ -211,8 +199,8 @@ def search_articles(request):
             Q(tags__name__icontains=query)
         ).distinct()
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':  # Проверка на AJAX-запрос
-        results = [{'title': article.title, 'slug': article.slug} for article in articles[:10]]  # Используем slug статьи
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        results = [{'title': article.title, 'slug': article.slug} for article in articles[:10]]
         return JsonResponse({'results': results})
 
     return render(request, 'search_results.html', {'articles': articles, 'query': query, 'categories': categories})

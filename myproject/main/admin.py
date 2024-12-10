@@ -39,7 +39,7 @@ from .models import Article
 
 import locale
 
-locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')  # Установите русский язык для локали
+locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
@@ -64,7 +64,6 @@ class ArticleAdmin(admin.ModelAdmin):
     short_death_date.short_description = "Дата смерти"
 
 
-
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'article', 'created_at')
@@ -75,11 +74,11 @@ from .models import Category, Article, Tag
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'priority', 'photo')  # Отображение имени и приоритета
-    list_editable = ('priority',)  # Поле для редактирования прямо в списке
-    ordering = ('priority',)  # Сортировка по приоритету
-    search_fields = ('name',)  # Поле для поиска
-    prepopulated_fields = {"slug": ("name",)}  # Автозаполнение slug
+    list_display = ('name', 'priority', 'photo')
+    list_editable = ('priority',)
+    ordering = ('priority',)
+    search_fields = ('name',)
+    prepopulated_fields = {"slug": ("name",)}
 
 
 from django.contrib import admin
@@ -104,7 +103,7 @@ from .models import DisplayCategoryOrder
 @admin.register(DisplayCategoryOrder)
 class DisplayCategoryOrderAdmin(admin.ModelAdmin):
     list_display = ('position', 'category_type', 'category')
-    list_display_links = ('category_type',)  # Указываем ссылку на редактирование
-    list_editable = ('position',)  # Теперь 'position' можно редактировать
+    list_display_links = ('category_type',)
+    list_editable = ('position',)
     list_filter = ('category_type',)
     search_fields = ('category__name',)
