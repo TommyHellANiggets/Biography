@@ -19,6 +19,10 @@
     margin: 0;
 }
 
+.category__text > .article__title {
+    padding-inline: 0px;
+}
+
 .category__card:hover::after {
     opacity: 1; /* Показать затемнение при наведении */
 }
