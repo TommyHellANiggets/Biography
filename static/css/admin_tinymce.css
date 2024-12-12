@@ -1,0 +1,31 @@
+.tox-tinymce {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 4px !important;
+    background-color: var(--darkened-bg) !important;
+}
+
+.tox .tox-toolbar,
+.tox .tox-toolbar__overflow,
+.tox .tox-toolbar-overlord,
+.tox .tox-edit-area__iframe,
+.tox .tox-statusbar {
+    background-color: var(--darkened-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.tox .tox-tbtn {
+    color: var(--body-fg) !important;
+}
+
+.tox .tox-tbtn:hover {
+    background-color: var(--body-quiet-color) !important;
+}
+
+.tox .tox-statusbar {
+    border-top: 1px solid var(--border-color) !important;
+    color: var(--body-fg) !important;
+}
+
+.tox .tox-statusbar a {
+    color: var(--link-fg) !important;
+} 

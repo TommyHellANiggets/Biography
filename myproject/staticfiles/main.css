@@ -1,0 +1,20 @@
+.flex-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    height: fit-content;
+}
+
+.flex-row h1 {
+    font-size: 28px;
+}
+
+#sortSelect {
+    border-radius: 20px;
+    padding: 4px 8px;
+}
+
+.articles {
+    padding-top: 20px;
+}
