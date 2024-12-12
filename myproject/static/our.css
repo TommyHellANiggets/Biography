@@ -48,6 +48,7 @@ h1, h2, h3, h4, h5, p, ul, li {
     display: none;
 }
 
+
 @media (max-width: 768px) {
     .header {
         position: fixed;
@@ -62,12 +63,6 @@ h1, h2, h3, h4, h5, p, ul, li {
 
     .main {
         padding-top: 60px;
-    }
-
-    .burger-menu {
-        display: block;
-        position: relative;
-        z-index: 997;
     }
 
     .custom-sidebar {
@@ -116,7 +111,7 @@ h1, h2, h3, h4, h5, p, ul, li {
     .header__content {
         position: relative;
         z-index: 997;
-        margin-inline: 15px;
+        padding-inline: 15px;
     }
 
     .navigation {
@@ -283,6 +278,14 @@ h1, h2, h3, h4, h5, p, ul, li {
     .sidebar {
         display: none;
     }
+
+    
+    .burger-menu {
+        display: block;
+        position: relative;
+        z-index: 997;
+    }
+
 }
 
 .sidebar__title {
