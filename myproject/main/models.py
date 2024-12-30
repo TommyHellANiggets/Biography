@@ -124,32 +124,30 @@ class DisplaySettings(models.Model):
 from django.db import models
 
 class DisplayCategoryOrder(models.Model):
-    CATEGORY_TYPE_CHOICES = [
-        ('recent', 'Последние добавленные'),
-        ('popular', 'Популярные'),
-        ('category', 'Категория'),
-    ]
-
+    position = models.IntegerField(default=0, verbose_name="Позиция")
     category_type = models.CharField(
         max_length=20,
-        choices=CATEGORY_TYPE_CHOICES,
-        verbose_name="Тип отображения",
+        choices=[
+            ('popular', 'Популярные'),
+            ('recent', 'Последние добавленные')
+        ],
+        default='recent',
+        verbose_name="Тип отображения"
     )
     category = models.ForeignKey(
-        'Category',
-        on_delete=models.CASCADE,
+        Category,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name="Категория (если выбрана)"
+        verbose_name="Категория"
     )
-    position = models.PositiveIntegerField("Позиция", default=0)
 
     class Meta:
-        verbose_name = "Отображение категорий"
-        verbose_name_plural = "Отображение категорий"
         ordering = ['position']
+        verbose_name = "Порядок отображения категории"
+        verbose_name_plural = "Порядок отображения категорий"
 
     def __str__(self):
-        if self.category_type == 'category' and self.category:
-            return f"{self.position}. {self.category.name}"
-        return f"{self.position}. {dict(self.CATEGORY_TYPE_CHOICES).get(self.category_type)}"
+        if self.category:
+            return f"{self.get_category_type_display()} - {self.category.name}"
+        return self.get_category_type_display()

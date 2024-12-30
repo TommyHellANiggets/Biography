@@ -17,49 +17,62 @@ from django.shortcuts import render
 from .models import Category, Article, DisplayCategoryOrder, GridSettings
 
 def home(request):
-    sort_option = request.GET.get('sort', '-publication_date')
-    
-    categories = Category.objects.all()
-
-    display_order = DisplayCategoryOrder.objects.select_related('category').all()
-
     grid_setting = GridSettings.objects.first()
-    card_count = grid_setting.card_count if grid_setting else 5
-
-    try:
-        popular_articles = Article.objects.order_by(sort_option)[:card_count]
-        recent_articles = Article.objects.order_by(sort_option)[:card_count]
-    except Exception as e:
-        popular_articles = Article.objects.order_by('-views')[:card_count]
-        recent_articles = Article.objects.order_by('-publication_date')[:card_count]
-
+    card_count = grid_setting.card_count if grid_setting else 3
+    
+    display_order = DisplayCategoryOrder.objects.select_related('category').all()
+    categories = Category.objects.all()
     rows = []
+    
+    recent_articles_ids = set()
+    popular_articles_ids = set()
+
     for item in display_order:
-        if item.category_type == 'recent':
-            rows.append({
-                'type': 'recent',
-                'title': 'Последние добавленные',
-                'articles': recent_articles,
-            })
-        elif item.category_type == 'popular':
-            rows.append({
-                'type': 'popular',
-                'title': 'Популярные',
-                'articles': popular_articles,
-            })
-        elif item.category_type == 'category' and item.category:
-            articles = Article.objects.filter(category=item.category).order_by(sort_option)[:card_count]
-            rows.append({
-                'type': 'category',
-                'title': item.category.name,
-                'articles': articles,
-            })
+        if item.category_type == 'popular':
+            articles = Article.objects.filter(
+                category__isnull=False
+            ).exclude(
+                id__in=popular_articles_ids
+            ).order_by('-views')[:card_count]
+            
+            if articles.exists():
+                popular_articles_ids.update(articles.values_list('id', flat=True))
+                rows.append({
+                    'type': 'popular',
+                    'title': 'Популярные',
+                    'articles': articles,
+                })
+                
+        elif item.category_type == 'recent' and item.category:
+            articles = Article.objects.filter(
+                category=item.category
+            ).exclude(
+                id__in=recent_articles_ids
+            ).order_by('-publication_date')[:card_count]
+            
+            if articles.exists():
+                recent_articles_ids.update(articles.values_list('id', flat=True))
+                rows.append({
+                    'type': 'recent',
+                    'title': f"{item.category.name}",
+                    'articles': articles,
+                })
+        else:
+            articles = Article.objects.filter(
+                category=item.category
+            ).order_by('?')[:card_count]
+            
+            if articles.exists():
+                rows.append({
+                    'type': 'category',
+                    'title': f"{item.category.name}",
+                    'articles': articles,
+                })
 
     context = {
         'rows': rows,
         'card_count': card_count,
         'categories': categories,
-        'sort_option': sort_option,
     }
     return render(request, 'main.html', context)
 
@@ -192,15 +205,53 @@ def search_articles(request):
     articles = Article.objects.none()
 
     if query:
-        articles = Article.objects.filter(
-            Q(title__icontains=query) |
-            Q(birth_date__icontains=query) |
-            Q(death_date__icontains=query) |
-            Q(tags__name__icontains=query)
-        ).distinct()
+        search_query = Q(title__icontains=query) | Q(tags__name__icontains=query)
+
+        months = {
+            'январь': '01', 'февраль': '02', 'март': '03', 'апрель': '04',
+            'май': '05', 'июнь': '06', 'июль': '07', 'август': '08',
+            'сентябрь': '09', 'октябрь': '10', 'ноябрь': '11', 'декабрь': '12',
+            'января': '01', 'февраля': '02', 'марта': '03', 'апреля': '04',
+            'мая': '05', 'июня': '06', 'июля': '07', 'августа': '08',
+            'сентября': '09', 'октября': '10', 'ноября': '11', 'декабря': '12'
+        }
+
+        words = query.lower().split()
+        
+        for word in words:
+            if word.isdigit() and len(word) == 4:
+                year = word
+                search_query |= Q(birth_date__year=year) | Q(death_date__year=year)
+                
+        import re
+        date_patterns = [
+            r'(\d{1,2})\.(\d{1,2})\.(\d{4})',
+            r'(\d{1,2})/(\d{1,2})/(\d{4})'
+        ]
+        
+        for word in words:
+            for pattern in date_patterns:
+                match = re.match(pattern, word)
+                if match:
+                    day, month, year = match.groups()
+                    day = day.zfill(2)
+                    month = month.zfill(2)
+                    date_str = f"{year}-{month}-{day}"
+                    search_query |= Q(birth_date__contains=date_str) | Q(death_date__contains=date_str)
+                    break
+
+        articles = Article.objects.filter(search_query).distinct()
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         results = [{'title': article.title, 'slug': article.slug} for article in articles[:10]]
         return JsonResponse({'results': results})
 
-    return render(request, 'search_results.html', {'articles': articles, 'query': query, 'categories': categories})
+    grid_setting = GridSettings.objects.first()
+    card_count = grid_setting.card_count if grid_setting else 5
+
+    return render(request, 'search_results.html', {
+        'articles': articles,
+        'query': query,
+        'categories': categories,
+        'card_count': card_count
+    })

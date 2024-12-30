@@ -29,13 +29,19 @@
             <li class="biography__item">
                 <a href="{% url 'biography_details' article.slug %}" class="biography__link">
                     <figure class="biography__card">
-                        <img class="biography__image" src="{{ article.photo.url }}" alt="{{ article.title }}">
+                        {% if article.photo %}
+                            <img class="biography__image" src="{{ article.photo.url }}" alt="{{ article.title }}">
+                        {% else %}
+                            <img class="biography__image" src="{% static 'images/no-photo.svg' %}" alt="Нет фото">
+                        {% endif %}
                         <figcaption class="biography__name">{{ article.title }}</figcaption>
                     </figure>
                 </a>
             </li>
             {% endfor %}
         </ul>
+    {% else %}
+        <p>По вашему запросу ничего не найдено.</p>
     {% endif %}
 </div>
 {% endblock %}

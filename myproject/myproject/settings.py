@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import locale
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,10 +26,10 @@ SECRET_KEY = 'django-insecure-b9c1rg9n0*ttbx1zdd6*)(1+_o+^*0*!8w$^za=y(%#hg$l-q3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '5776-80-246-94-120.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1', '3b19-103-109-244-3.ngrok-free.app']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://5776-80-246-94-120.ngrok-free.app',
+    'https://3b19-103-109-244-3.ngrok-free.app',
 
 ]
 
@@ -45,11 +46,13 @@ INSTALLED_APPS = [
     'main',
     'tinymce',
     'simplemde',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -117,8 +120,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'ru'
-USE_L10N = True
 USE_I18N = True
+USE_TZ = True
 TIME_ZONE = 'Europe/Moscow'
 DEFAULT_CHARSET = 'utf-8'
 
@@ -136,3 +139,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DATE_FORMAT = 'j E Y'
+DATETIME_FORMAT = 'j E Y H:i'
+SHORT_DATE_FORMAT = 'd.m.Y'
+SHORT_DATETIME_FORMAT = 'd.m.Y H:i'
+
+locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')

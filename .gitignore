@@ -1,19 +1,22 @@
-# Virtual Environment
-venv/
-env/
-.env/
-.venv/
+# PyCharm
+.idea/
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 
-# IDE
-.idea/
-.vscode/
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
 
-# Distribution / packaging
-dist/
-build/
-*.egg-info/ 
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Other
+.DS_Store 
